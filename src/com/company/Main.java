@@ -38,8 +38,13 @@ public class Main {
                     String body = request.body();
                     JsonParser parser = new JsonParser();
                     HashMap<String,String> m = parser.parse(body);
-                    insertMessage(conn,m.get("text"),0);
-                    return null;
+                    User user = selectUser(conn,m.get("author"));
+                    if(user == null) {
+                        insertUser(conn,m.get("author"));
+                        user = selectUser(conn,m.get("text"));
+                    }
+                    insertMessage(conn,m.get("text"),user.id);
+                    return "";
                 }
         );
     }
